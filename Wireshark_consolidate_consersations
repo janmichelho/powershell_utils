@@ -1,0 +1,13 @@
+# Set the folder where your captures are stored
+$CaptureFolder = "C:\Path\to\Captures"
+
+# Output file to store the consolidated IPv4 conversations
+$OutputFile = "C:\Path\to\ConversationsReport.txt"
+
+# Loop through all .pcap or .pcapng files and extract IPv4 conversations
+Get-ChildItem -Path $CaptureFolder -Filter "*.pcap*" | ForEach-Object {
+    Write-Output "Processing $($_.Name)"
+    tshark -r $_.FullName -q -z conv,ip | Out-File -Append -FilePath $OutputFile
+}
+
+# Note: Yo can use “-z conv,ip” OR “-z conv,tcp” OR “-z conv,udp”
