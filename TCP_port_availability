@@ -1,0 +1,21 @@
+# Settings
+$hostname = "your.server.com"
+$port = 443                   # Set specific TCP port 
+$intervalSeconds = 10         # Time between checks
+$durationMinutes = 5          # Total duration of monitoring
+
+# Calculate when to stop
+$endTime = (Get-Date).AddMinutes($durationMinutes)
+
+# Loop until time expires
+while ((Get-Date) -lt $endTime) {
+    $result = Test-NetConnection -ComputerName $hostname -Port $port
+
+    if ($result.TcpTestSucceeded) {
+        Write-Host "$(Get-Date -Format 'HH:mm:ss') - Port $port is OPEN on $hostname" -ForegroundColor Green
+    } else {
+        Write-Host "$(Get-Date -Format 'HH:mm:ss') - Port $port is CLOSED on $hostname" -ForegroundColor Red
+    }
+
+    Start-Sleep -Seconds $intervalSeconds
+}
